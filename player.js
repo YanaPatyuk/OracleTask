@@ -1,13 +1,9 @@
-
 //url for jsonp
 let url = 'https://guidedlearning.oracle.com/player/latest/api/scenario/get/v_IlPvRLRWObwLnV5sTOaw/5szm2kaj/?callback=__5szm2kaj&refresh=true&env=dev&type=startPanel&vars%5Btype%5D=startPanel&sid=none&_=1582203987867';
 //set a script elemnt to get the jsonp data
 var s = document.createElement("script");
 s.src = url;
 document.body.appendChild(s);
-var tipList;
-var currentTip;
-
 
 
 //callback function
@@ -58,10 +54,8 @@ function __5szm2kaj(jsonpObj) {
 //set buttons functions
 function setButtons() {
   document.getElementsByClassName("next-btn")[0].href = "javascript:nextButton();";
-  document.getElementsByClassName("prev-btn default-prev-btn")[0].setAttribute( "onClick", "backButton();" );
-  
-  document.getElementsByClassName("popover-title")[0].firstElementChild.setAttribute( "onClick", "close();" );
-
+  document.getElementsByClassName("prev-btn default-prev-btn")[0].setAttribute( "onclick", "backButtonYana" );
+  document.getElementsByClassName("popover-title")[0].firstElementChild.onclick =  closeYana;
 }
 //set current tip for display. input:index of tip
 function setTip(tipIndex) {
@@ -74,19 +68,21 @@ function setTip(tipIndex) {
 function nextButton() {
   currentTip+=1;
   //if no tips left-close
-  if(currentTip >= tipList.length - 1) close();
+  if(currentTip >= tipList.length - 1) closeYana();
   else{
     setTip(currentTip);
   }
-};
+}
 
-function backButton() {
+function closeYana() {
+  console.log("stop the program tips")
+  document.getElementById("TipsForGoogle").remove();
+  }
+  
+
+function backButtonYana() {
   if(currentTip == 0) return;
   currentTip -=1;
   setTip(currentTip);
-};
+}
 
-function close() {
-
-document.getElementById("TipsForGoogle").remove();
-};
