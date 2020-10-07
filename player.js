@@ -5,6 +5,10 @@ let url = 'https://guidedlearning.oracle.com/player/latest/api/scenario/get/v_Il
 var s = document.createElement("script");
 s.src = url;
 document.body.appendChild(s);
+var tipList;
+var currentTip;
+
+
 
 //callback function
 function __5szm2kaj(jsonpObj) {
@@ -25,30 +29,64 @@ function __5szm2kaj(jsonpObj) {
       ss1.appendChild(tt1);
     }
 
-    //ceate only one tip, to check
+    //ceate div elemnt for the tips
+    var rawTip = jsonpObj.data.tiplates.tip;
+    //get raw tip as html string.
     var rawTip = jsonpObj.data.tiplates.tip;
     var hoverTip = jsonpObj.data.tiplates.hoverTip; 
-    var currentTip = 0;
-    var tipList = jsonpObj.data.structure.steps;
+    //set tip list as global.
+    tipList = jsonpObj.data.structure.steps;
+    currentTip = 0;
 
-    //create div elemnt
+    //first-create tooltip div class witch will contain the tip.
     var divToolTip = document.createElement("div");
-    //set clsaa to sttip
     divToolTip.classList.add("tooltip");
-    divToolTip.innerHTML = SetTipData(rawTip,tipList[0]);
-    
+    //set the raw html string tip
+    divToolTip.innerHTML = rawTip;
+    //create "father" div, witch contain the sttip class
     var divSttip= document.createElement("div");
+    divSttip.id = "TipsForGoogle";
     divSttip.classList.add("sttip");
+    //add the tool-tip as a child and append to bodt html.
     divSttip.appendChild(divToolTip);
     document.body.appendChild(divSttip);
-
+    //set buttons
+    setButtons();
+    setTip(currentTip);
 
 }
+//set buttons functions
+function setButtons() {
+  document.getElementsByClassName("next-btn")[0].href = "javascript:nextButton();";
+  document.getElementsByClassName("prev-btn default-prev-btn")[0].setAttribute( "onClick", "backButton();" );
+  
+  document.getElementsByClassName("popover-title")[0].firstElementChild.setAttribute( "onClick", "close();" );
 
-function SetTipData(rawDivFormat, tipData) {
-  var finalDiv = "";
-  console.log(tipData.action.contents['#content']);
-  finalDiv = rawDivFormat.replace("data-iridize-id=\"content\">","data-iridize-id=\"content\">" + tipData.action.contents['#content']);
-
-  return finalDiv;
 }
+//set current tip for display. input:index of tip
+function setTip(tipIndex) {
+  var currentTip = tipList[tipIndex];
+  document.getElementsByClassName("popover-content")[0].firstChild.innerHTML = currentTip.action.contents["#content"];
+  document.getElementsByClassName("steps-count")[0].firstElementChild.innerText = currentTip.action.stepOrdinal;
+  document.getElementsByClassName("steps-count")[0].lastElementChild.innerText = tipList.length - 1;
+}
+
+function nextButton() {
+  currentTip+=1;
+  //if no tips left-close
+  if(currentTip >= tipList.length - 1) close();
+  else{
+    setTip(currentTip);
+  }
+};
+
+function backButton() {
+  if(currentTip == 0) return;
+  currentTip -=1;
+  setTip(currentTip);
+};
+
+function close() {
+
+document.getElementById("TipsForGoogle").remove();
+};
