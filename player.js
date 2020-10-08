@@ -54,8 +54,9 @@ function __5szm2kaj(jsonpObj) {
 //set buttons functions
 function setButtons() {
   document.getElementsByClassName("next-btn")[0].href = "javascript:nextButton();";
-  document.getElementsByClassName("prev-btn default-prev-btn")[0].setAttribute( "onclick", "backButtonYana" );
-  document.getElementsByClassName("popover-title")[0].firstElementChild.onclick =  closeYana;
+  document.getElementsByClassName("prev-btn default-prev-btn")[0].setAttribute( "onclick", "backButtonYana()" );
+  document.getElementsByClassName("prev-btn default-prev-btn")[0].className = 'tooltip showPrevBt prev-btn default-prev-btn';
+  document.getElementsByClassName("popover-title")[0].firstElementChild.setAttribute("onclick", "closeYana()");
 }
 //set current tip for display. input:index of tip
 function setTip(tipIndex) {
