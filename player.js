@@ -4,14 +4,44 @@ let url = 'https://guidedlearning.oracle.com/player/latest/api/scenario/get/v_Il
 var s = document.createElement("script");
 s.src = url;
 document.body.appendChild(s);
-
+//global. 
+var currentTip;
+var tipList;
 
 //callback function
 function __5szm2kaj(jsonpObj) {
   //check for correct
   console.log('Request Good')  
-  console.log(jsonpObj) 
+  console.log(jsonpObj);
+  //set tip list as global.
+  tipList = jsonpObj.data.structure.steps;
+  currentTip = 1;
+  //add the css style and default tip
+  AddStyleToHtml(jsonpObj);
+  setTheDivDefaultTip(jsonpObj.data.tiplates.tip);
+  //set buttons
+  setButtons();
+  //set first tip
+  setTip(currentTip);
 
+}
+
+function setTheDivDefaultTip(rawTip) {
+  //first-create tooltip div class witch will contain the tip.
+  var divToolTip = document.createElement("div");
+  divToolTip.classList.add("tooltip");
+  //set the raw html string tip
+  divToolTip.innerHTML = rawTip;
+  //create "father" div, witch contain the sttip class
+  var divSttip= document.createElement("div");
+  divSttip.id = "TipsForGoogle";
+  divSttip.classList.add("sttip");
+  //add the tool-tip as a child and append to bodt html.
+  divSttip.appendChild(divToolTip);
+  document.body.appendChild(divSttip);
+}
+
+function AddStyleToHtml(jsonpObj) {
   //create style elemnt to add css info on head
   var ss1 = document.createElement('style');
   var cssStyleRaw = jsonpObj.data.css
@@ -21,36 +51,12 @@ function __5szm2kaj(jsonpObj) {
   if (ss1.styleSheet) {   // IE
       ss1.styleSheet.innerHTML = cssStyleRaw;
   } else {                // the world
-      var tt1 = document.createTextNode(cssStyleRaw);
-      ss1.appendChild(tt1);
-    }
-
-    //ceate div elemnt for the tips
-    var rawTip = jsonpObj.data.tiplates.tip;
-    //get raw tip as html string.
-    var rawTip = jsonpObj.data.tiplates.tip;
-    var hoverTip = jsonpObj.data.tiplates.hoverTip; 
-    //set tip list as global.
-    tipList = jsonpObj.data.structure.steps;
-    currentTip = 0;
-
-    //first-create tooltip div class witch will contain the tip.
-    var divToolTip = document.createElement("div");
-    divToolTip.classList.add("tooltip");
-    //set the raw html string tip
-    divToolTip.innerHTML = rawTip;
-    //create "father" div, witch contain the sttip class
-    var divSttip= document.createElement("div");
-    divSttip.id = "TipsForGoogle";
-    divSttip.classList.add("sttip");
-    //add the tool-tip as a child and append to bodt html.
-    divSttip.appendChild(divToolTip);
-    document.body.appendChild(divSttip);
-    //set buttons
-    setButtons();
-    setTip(currentTip);
-
+    var tt1 = document.createTextNode(cssStyleRaw);
+    ss1.appendChild(tt1);
+  }
 }
+
+
 //set buttons functions
 function setButtons() {
   document.getElementsByClassName("next-btn")[0].href = "javascript:nextButton();";
@@ -58,19 +64,31 @@ function setButtons() {
   document.getElementsByClassName("prev-btn default-prev-btn")[0].className = 'tooltip showPrevBt prev-btn default-prev-btn';
   document.getElementsByClassName("popover-title")[0].firstElementChild.setAttribute("onclick", "closeYana()");
 }
+
+
 //set current tip for display. input:index of tip
 function setTip(tipIndex) {
-  var currentTip = tipList[tipIndex];
-  document.getElementsByClassName("popover-content")[0].firstChild.innerHTML = currentTip.action.contents["#content"];
-  document.getElementsByClassName("steps-count")[0].firstElementChild.innerText = currentTip.action.stepOrdinal;
+  //get the new tip data by id
+  var currentTipData = getTipData(tipIndex);
+  //if nothing found
+  if(currentTipData == null) {
+    console.log("No such tip in index: ", tipIndex);
+    return;
+  }
+  currentTip = tipIndex;
+  //set tip contant, and steps display
+  document.getElementsByClassName("popover-content")[0].firstChild.innerHTML = currentTipData.action.contents["#content"];
+  document.getElementsByClassName("steps-count")[0].firstElementChild.innerText = currentTipData.action.stepOrdinal;
   document.getElementsByClassName("steps-count")[0].lastElementChild.innerText = tipList.length - 1;
 }
 
 function nextButton() {
-  currentTip+=1;
-  //if no tips left-close
-  if(currentTip >= tipList.length - 1) closeYana();
+  var currentTipData = getTipData(currentTip);
+  //if next step is to close
+  if(currentTipData.followers[0].next == "eol0") closeYana();
+  //if next setp is a number, update current tip
   else{
+    currentTip = currentTipData.followers[0].next;
     setTip(currentTip);
   }
 }
@@ -82,8 +100,24 @@ function closeYana() {
   
 
 function backButtonYana() {
-  if(currentTip == 0) return;
-  currentTip -=1;
-  setTip(currentTip);
+  //find previus tip
+  var prevTip = null;
+  var nextTip = tipList[0];
+  while(nextTip.id != currentTip){
+    console.log(prevTip, nextTip, currentTip);
+    prevTip = nextTip.id;
+    nextTip = getTipData(nextTip.followers[0].next);
+  }
+  //disable button
+  //if current tip is the first
+  if(prevTip == null) return;
+  //enable button+set the tip
+  setTip(prevTip);
 }
-
+//get tip data by its id. if no such tip return null
+function getTipData(tipId){
+  for(var i = 0; i < tipList.length;i++){
+    if(tipList[i].id == tipId) return tipList[i];
+  }
+  return null;
+}
