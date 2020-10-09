@@ -27,6 +27,8 @@ function __5szm2kaj(jsonpObj) {
 
 }
 
+
+
 function setTheDivDefaultTip(rawTip = jsonpObject.data.tiplates.tip) {
   //first-create tooltip div class witch will contain the tip.
   var divToolTip = document.createElement("div");
@@ -61,6 +63,17 @@ function setButtons() {
   document.getElementsByClassName("popover-title")[0].firstElementChild.setAttribute("onclick", "closeYana()");
 }
 
+function setNextEventSelector() {
+  var selector = getTipData(currentTip);
+  if(selector.next.selector == ".gb_g:contains(\"Images\")") {
+    document.querySelectorAll(".gb_g")[1].setAttribute("on" + selector.next.event, "nextButton()");
+    document.querySelectorAll(".gb_g")[1].href = "#";
+  } else {
+    document.querySelector(selector.next.selector).setAttribute("on" + selector.next.event, "nextButton()");
+    document.querySelector(selector.next.selector).href = "#";
+  }
+}
+
 
 //set current tip for display. input:index of tip
 function setTip(tipIndex) {
@@ -78,13 +91,18 @@ function setTip(tipIndex) {
   setButtons();
 
   var tipclasses = "panel-container tooltip";
-  tipclasses = tipclasses + " " + currentTipData.action.classes;
-
+  //if there are classes to add from the tip data-add them to the default tip
+  if(currentTipData.action.classes)
+    tipclasses = tipclasses + " " + currentTipData.action.classes;
   document.getElementById("TipsForGoogle").firstChild.className = tipclasses;
   //set tip contant, and steps display
   document.getElementsByClassName("popover-content")[0].firstChild.innerHTML = currentTipData.action.contents["#content"];
   document.getElementsByClassName("steps-count")[0].firstElementChild.innerText = currentTipData.action.stepOrdinal;
   document.getElementsByClassName("steps-count")[0].lastElementChild.innerText = tipList.length - 1;
+
+  //if there is next attribute, set it
+  if(currentTipData.next != null) setNextEventSelector();
+
 }
 
 function nextButton() {
