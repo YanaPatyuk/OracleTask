@@ -4,41 +4,38 @@ let url = 'https://guidedlearning.oracle.com/player/latest/api/scenario/get/v_Il
 var s = document.createElement("script");
 s.src = url;
 document.body.appendChild(s);
+
+
 //global. 
 var currentTip;
 var tipList;
+var jsonpObject;
 
 //callback function
 function __5szm2kaj(jsonpObj) {
   //check for correct
   console.log('Request Good')  
   console.log(jsonpObj);
+  jsonpObject = jsonpObj;
   //set tip list as global.
   tipList = jsonpObj.data.structure.steps;
   currentTip = 1;
   //add the css style and default tip
   AddStyleToHtml(jsonpObj);
-  setTheDivDefaultTip(jsonpObj.data.tiplates.tip);
-  //set buttons
-  setButtons();
   //set first tip
   setTip(currentTip);
 
 }
 
-function setTheDivDefaultTip(rawTip) {
+function setTheDivDefaultTip(rawTip = jsonpObject.data.tiplates.tip) {
   //first-create tooltip div class witch will contain the tip.
   var divToolTip = document.createElement("div");
-  divToolTip.classList.add("tooltip");
+  divToolTip.classList.add("sttip");
   //set the raw html string tip
   divToolTip.innerHTML = rawTip;
-  //create "father" div, witch contain the sttip class
-  var divSttip= document.createElement("div");
-  divSttip.id = "TipsForGoogle";
-  divSttip.classList.add("sttip");
-  //add the tool-tip as a child and append to bodt html.
-  divSttip.appendChild(divToolTip);
-  document.body.appendChild(divSttip);
+  divToolTip.id = "TipsForGoogle";
+  //add the tool-tip -append to body html.
+  document.body.appendChild(divToolTip);
 }
 
 function AddStyleToHtml(jsonpObj) {
@@ -61,7 +58,6 @@ function AddStyleToHtml(jsonpObj) {
 function setButtons() {
   document.getElementsByClassName("next-btn")[0].href = "javascript:nextButton();";
   document.getElementsByClassName("prev-btn default-prev-btn")[0].setAttribute( "onclick", "backButtonYana()" );
-  document.getElementsByClassName("prev-btn default-prev-btn")[0].className = 'tooltip showPrevBt prev-btn default-prev-btn';
   document.getElementsByClassName("popover-title")[0].firstElementChild.setAttribute("onclick", "closeYana()");
 }
 
@@ -76,6 +72,15 @@ function setTip(tipIndex) {
     return;
   }
   currentTip = tipIndex;
+
+  setTheDivDefaultTip();
+  //set buttons
+  setButtons();
+
+  var tipclasses = "panel-container tooltip";
+  tipclasses = tipclasses + " " + currentTipData.action.classes;
+
+  document.getElementById("TipsForGoogle").firstChild.className = tipclasses;
   //set tip contant, and steps display
   document.getElementsByClassName("popover-content")[0].firstChild.innerHTML = currentTipData.action.contents["#content"];
   document.getElementsByClassName("steps-count")[0].firstElementChild.innerText = currentTipData.action.stepOrdinal;
@@ -84,10 +89,12 @@ function setTip(tipIndex) {
 
 function nextButton() {
   var currentTipData = getTipData(currentTip);
+  
   //if next step is to close
   if(currentTipData.followers[0].next == "eol0") closeYana();
   //if next setp is a number, update current tip
   else{
+    closeYana();
     currentTip = currentTipData.followers[0].next;
     setTip(currentTip);
   }
@@ -104,7 +111,6 @@ function backButtonYana() {
   var prevTip = null;
   var nextTip = tipList[0];
   while(nextTip.id != currentTip){
-    console.log(prevTip, nextTip, currentTip);
     prevTip = nextTip.id;
     nextTip = getTipData(nextTip.followers[0].next);
   }
@@ -112,6 +118,7 @@ function backButtonYana() {
   //if current tip is the first
   if(prevTip == null) return;
   //enable button+set the tip
+  closeYana();
   setTip(prevTip);
 }
 //get tip data by its id. if no such tip return null
@@ -120,4 +127,19 @@ function getTipData(tipId){
     if(tipList[i].id == tipId) return tipList[i];
   }
   return null;
+}
+
+function rerunAgain() {
+  //url for jsonp
+let url = 'https://guidedlearning.oracle.com/player/latest/api/scenario/get/v_IlPvRLRWObwLnV5sTOaw/5szm2kaj/?callback=__5szm2kaj&refresh=true&env=dev&type=startPanel&vars%5Btype%5D=startPanel&sid=none&_=1582203987867';
+//set a script elemnt to get the jsonp data
+var s = document.createElement("script");
+s.src = url;
+document.body.appendChild(s);
+//global. 
+var currentTip;
+var tipList;
+var jsonpObject;
+
+
 }
