@@ -1,3 +1,4 @@
+
 //url for jsonp
 let url = 'https://guidedlearning.oracle.com/player/latest/api/scenario/get/v_IlPvRLRWObwLnV5sTOaw/5szm2kaj/?callback=__5szm2kaj&refresh=true&env=dev&type=startPanel&vars%5Btype%5D=startPanel&sid=none&_=1582203987867';
 //set a script elemnt to get the jsonp data. when data loaded, call __5szm2kaj funcion
@@ -162,7 +163,7 @@ function nextBt() {
 
   //if next step is to close
   if(currentTip == "eol0"){
-    alert("This End!");
+    alert("The End!");
     return;
   } else //any other case-go next step
     setTip(currentTip);
@@ -216,7 +217,7 @@ function getElemntBySelector(selectorString) {
     element =  document.querySelector(selectorString);
   }
   catch(err) {
-    console.log("This selector string not wrong:",selectorString );
+    console.log("This selector string wrong:",selectorString );
     if(selectorString == ".gb_g:contains(\"Images\")"){
       element = document.querySelectorAll(".gb_g")[1];
       if (element==null) element = document.querySelectorAll(".gb_g")[0];//it may be in 0 too
@@ -249,4 +250,37 @@ function getTipData(tipId){
     if(tipList[i].id == tipId) return tipList[i];
   }
   return null;
+}
+
+
+
+/**Testing part!**/
+function Testing() {
+  //test elemnt query
+  console.log("Test of elemnt by selector:", elemntTest());
+  console.log("Test get tip data:",tipDataTest());
+  console.log("Test Global ver data:",jsonGlobalAfter());
+
+  
+}
+
+
+function elemntTest(){
+  if(getElemntBySelector(".gb_g:contains(\"Images\")")==null) return "error: in elemnt test: expected elemnt a images";
+  if(getElemntBySelector("[name=\"q\"]")==null) return "error: in elemnt test: [name=\"q\"], expceted an element";
+  return "correct";
+}
+
+function tipDataTest() {
+  if(getTipData("") != null) return "error: expected null";
+  if(getTipData(0) != null) return "error: tip 0 not exsist. expected null";
+  if(getTipData("1")==null) return "error: a real elemnt";
+  return "correct";
+}
+//run after script
+function jsonGlobalAfter() {
+  if(currentTip == null) return "error: expexted currentTip";
+  if(tipList == null) return "error: expexted tipList";
+  if(jsonpObject == null) return "error: expexted jsonpObject";
+  return "correct";
 }
