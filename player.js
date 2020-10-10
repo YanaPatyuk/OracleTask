@@ -117,9 +117,14 @@ function setTheDivDefaultTip(rawTip = jsonpObject.data.tiplates.tip) {
   var divToolTip = document.createElement("div");
   //set sttip class
   divToolTip.classList.add("sttip");
+  //if there are global classes to add. this is asumption about the data
+  if(jsonpObject.data.structure.classes.length) divToolTip.classList.add(jsonpObject.data.structure.classes);
+  //if there is url to set.
+  if(jsonpObject.data.structure.url.length) divToolTip.str = jsonpObject.data.structure.url;
   //set the raw html string tip
   divToolTip.innerHTML = rawTip;
   divToolTip.id = "TipsForGoogle";
+
   //add the tool-tip -append to body html.
   //getElemntBySelector(getTipData(currentTip).action.selector).parentElement.after(divToolTip);
   //getElemntBySelector(getTipData(currentTip).action.selector).parentElement.after(divToolTip);
