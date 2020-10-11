@@ -5,6 +5,7 @@ let url = 'https://guidedlearning.oracle.com/player/latest/api/scenario/get/v_Il
 var s = document.createElement("script");
 s.src = url;
 document.head.appendChild(s);
+var defaultPos = true;
 
 
 //global. 
@@ -42,6 +43,8 @@ function AddStyleToHtml() {
   //create style elemnt to add css info on head
   var styleElemnt = document.createElement('style');
   var cssStyleRaw = jsonpObject.data.css; //get the raw style
+  //change appearance of backBt
+  cssStyleRaw= changeBackButtonMaxWidth(cssStyleRaw);
   styleElemnt.setAttribute("type", "text/css"); //set the type
   //get the head to append
   var headElemnt = document.getElementsByTagName('head')[0];
@@ -126,9 +129,8 @@ function setTheDivDefaultTip(rawTip = jsonpObject.data.tiplates.tip) {
   divToolTip.id = "TipsForGoogle";
 
   //add the tool-tip -append to body html.
-  //getElemntBySelector(getTipData(currentTip).action.selector).parentElement.after(divToolTip);
-  //getElemntBySelector(getTipData(currentTip).action.selector).after(divToolTip);
-  document.body.appendChild(divToolTip);
+  if(defaultPos) document.body.appendChild(divToolTip);
+  else getElemntBySelector(getTipData(currentTip).action.selector).after(divToolTip);
 }
 
 /**
@@ -289,3 +291,14 @@ function jsonGlobalAfter() {
   if(jsonpObject == null) return "error: expexted jsonpObject";
   return "correct";
 }
+
+/**
+ * Change back-button visability.
+ * On Chrome, max-width is too small 
+ * @param {} styleData 
+ */
+function changeBackButtonMaxWidth(styleData){
+    var prev = "div.sttip div.tooltip.showPrevBt .stFooter .default-prev-btn {\r\n        min-width: 26px;\r\n        padding-right: 14px;\r\n        padding-left: 14px;\r\n        display: inline-block;\r\n        text-align: center;\r\n        text-decoration: none;\r\n        font-weight: bold;\r\n        position:relative;\r\n        white-space: nowrap;\r\n        overflow: hidden;\r\n        text-overflow: ellipsis;\r\n        max-width: 42px;\r\n    }";
+    var newButton = "div.sttip div.tooltip.showPrevBt .stFooter .default-prev-btn {\r\n        min-width: 26px;\r\n        padding-right: 14px;\r\n        padding-left: 14px;\r\n        display: inline-block;\r\n        text-align: center;\r\n        text-decoration: none;\r\n        font-weight: bold;\r\n        position:relative;\r\n        white-space: nowrap;\r\n        overflow: hidden;\r\n        text-overflow: ellipsis;\r\n    }";
+    return styleData.replace(prev,newButton);
+  }
