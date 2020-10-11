@@ -35,3 +35,4 @@ I was unable to position the tag correctly. Currently, in the default mode the t
 I tried to add it after I found the SELECTOR element and also inside the element, but in both situations the result does not look good. I guess one of the settings in the design can fix this, I have not yet figured out how to position correctly.
 You can find in the script in the comment my attempts to place next to the text. While it works, it is not aesthetically pleasing.
 I tried to keep the script as general as possible. I was able to accurately locate the location of the various elements, and then perform tests of what input I received. However, it felt like "cheating" to me.
+To change tre position mode, change ```var defaultPos = true;``` in line 8 to false.
