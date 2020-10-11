@@ -69,8 +69,8 @@ function setTip(tipIndex) {
     return;
   }
   currentTip = tipIndex;
-  //place defailt tip on the page.
-  setTheDivDefaultTip();
+  //place default tip on the page by the type of tip
+  setTheDivDefaultTip(jsonpObject.data.tiplates[currentTipData.action.type]);
   //set  the buttons
   setButtons();
   //set classes to current step.
@@ -127,7 +127,7 @@ function setTheDivDefaultTip(rawTip = jsonpObject.data.tiplates.tip) {
 
   //add the tool-tip -append to body html.
   //getElemntBySelector(getTipData(currentTip).action.selector).parentElement.after(divToolTip);
-  //getElemntBySelector(getTipData(currentTip).action.selector).parentElement.after(divToolTip);
+  //getElemntBySelector(getTipData(currentTip).action.selector).after(divToolTip);
   document.body.appendChild(divToolTip);
 }
 
