@@ -29,7 +29,7 @@ Since it was not clear how general the task should be so as to suit as many situ
 5. The role of the "next". I assumed that the function of this tag is for the user to click on the image link without going to the image window but only to go to the next step in the guide. This assumption is due to the fact that the next step can only occur in the main Google window because the SELECTOR in the image tag does not find the location.
 
 
-##Step location
+## Step location
 I was unable to position the tag correctly. Currently, in the default mode the tag is placed after all the information. However, it is clear to me that it should be located close to the information to which it refers.
 I tried to add it after I found the SELECTOR element and also inside the element, but in both situations the result does not look good. I guess one of the settings in the design can fix this, I have not yet figured out how to position correctly.
 You can find in the script in the comment my attempts to place next to the text. While it works, it is not aesthetically pleasing.
