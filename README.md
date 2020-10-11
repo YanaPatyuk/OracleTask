@@ -27,6 +27,7 @@ Since it was not clear how general the task should be so as to suit as many situ
 3. The ```querySelector``` can't find text in css. Means, ```contains:``` not working and gives an error for ```.gb_g:contains("Images")```. I changed it to different query. More info:  https://www.w3.org/TR/selectors-3/#content-selectors 
 4. Which style to choose? In the style tag, there are lots of options, I chose what looks the simplest that works.
 5. The role of the "next". I assumed that the function of this tag is for the user to click on the image link without going to the image window but only to go to the next step in the guide. This assumption is due to the fact that the next step can only occur in the main Google window because the SELECTOR in the image tag does not find the location.
+6. I'm not supposed to change the JSONP link. Otherwise, I would rename the CALLBACK function.
 
 
 ## Step location
